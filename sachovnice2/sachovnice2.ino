@@ -7,6 +7,7 @@ int plocha[2][2];
 int plus[2];
 int minus[2];
 int minulystav[2][2];
+
 void setup() {
   Serial.begin(9600);
   pinMode(pin, INPUT);
@@ -43,7 +44,7 @@ void sachovnice() {
     for (int sloupec = 0; sloupec < 2; sloupec++) {
       digitalWrite(plus[sloupec], HIGH);
       digitalWrite(minus[radek], HIGH);
-      delay(20);
+      delay(10);
       plocha[sloupec][radek] = digitalRead(pin);
       digitalWrite(plus[sloupec], LOW);
       digitalWrite(minus[radek], LOW);
@@ -64,10 +65,14 @@ void vypis() {
 void zmena(){
   for (int radek = 0; radek < 2; radek++) {
     for (int sloupec = 0; sloupec < 2; sloupec++){
-       if (minulystav[sloupec][radek]!= plocha[sloupec][radek]){
+       if (plocha[sloupec][radek]!= minulystav[sloupec][radek]){
          Serial.print(sloupec);
          Serial.print(",");
-         Serial.println(radek); 
+         Serial.print(radek);
+         Serial.print(" ");
+         Serial.println(plocha[sloupec][radek]);
+         minulystav[sloupec][radek] = plocha[sloupec][radek];
+          
        }
     }
   }

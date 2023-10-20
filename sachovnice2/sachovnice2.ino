@@ -67,9 +67,7 @@ void zmena(){
     for (int sloupec = 0; sloupec < 2; sloupec++){
        if (plocha[sloupec][radek]!= minulystav[sloupec][radek]){
          Serial.print(sloupec);
-         Serial.print(",");
          Serial.print(radek);
-         Serial.print(" ");
          Serial.println(plocha[sloupec][radek]);
          minulystav[sloupec][radek] = plocha[sloupec][radek];
           

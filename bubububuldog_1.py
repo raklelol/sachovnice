@@ -2,10 +2,10 @@
 import pygame
 pygame.init()
 pygame.display.set_caption('Šachy')
-sachovnice = [[1,1,1,1,1,1,1,1],
+sachovnice = [[1,0,1,1,1,1,1,1],
 			  [1,1,1,1,1,1,1,1],
 			  [0,0,0,0,0,0,0,0],
-			  [0,0,0,0,0,0,0,0],
+			  [0,0,0,0,1,0,0,0],
 			  [0,0,0,0,0,0,0,0],
 			  [0,0,0,0,0,0,0,0],
 			  [1,1,1,1,1,1,1,1],
@@ -17,45 +17,58 @@ black = (0, 0, 0)
 brown = (179, 127, 79)
 green = (173, 234, 153)
 
-#tloušťka ohraničení šachovnice
-#rozlišení výšky monitoru, získané z pygame [0]>monitor [1]>souřadnice z listu(v našem případě y)
-#vzdálenost hrací plochy od lévého a horního okraje obrazovky
-
-hrana = 10
-rozliseni = pygame.display.get_desktop_sizes()[0][1]
-okraje = rozliseni/9/2
-#velikost_figurek = 
-
-#print(pygame.display.get_desktop_sizes())
-display_surface = pygame.display.set_mode((pygame.display.get_desktop_sizes()[0]))
-img = pygame.image.load("C:\\tesar\\projekt\\stickman.png")
-img = pygame.transform.scale(img, (rozliseni/9, rozliseni/9))
-
-while True:
-
+#generace hrací plochy
+def plocha():
 	#pozadí
 	display_surface.fill(green)
 	#generace políček
-	for x in range(8):
-		for y in range(8):
+	for x in range(velikost):
+		for y in range(velikost):
 			if(x%2==y%2): 
 				color = brown
 			else:
 				color = white
-			pygame.draw.rect(display_surface, color, pygame.Rect(rozliseni/9*x+okraje, rozliseni/9*y+okraje, rozliseni/9, rozliseni/9))
-			
-			
+			pygame.draw.rect(display_surface, color, pygame.Rect(rozdeleni*x+okraje, rozdeleni*y+okraje, rozdeleni, rozdeleni))
 	#ohraničení šachovnice
-	pygame.draw.rect(display_surface, black, pygame.Rect(okraje-hrana, okraje-hrana, rozliseni/9*8+hrana*2, rozliseni/9*8+hrana*2),  hrana)
-	for x in range(8):
-		for y in range(8):
-			if(sachovnice[y][x]==1):
-				display_surface.blit(img, (rozliseni/9*x+okraje, rozliseni/9*y+okraje))
+	pygame.draw.rect(display_surface, black, pygame.Rect(okraje-hrana, okraje-hrana, rozdeleni*velikost+hrana*2, rozdeleni*velikost+hrana*2),  hrana)
 
-	#pokud kliknete na křížek pro vypnutí programu tak se vypne 
+#generace figurek
+def figurky():
+	for x in range(velikost):
+		for y in range(velikost):
+			if(sachovnice[y][x]==1):
+				display_surface.blit(img, (rozdeleni*x+okraje+rozdeleni*1/8, rozdeleni*y+okraje+rozdeleni*0.5/8))
+	
+#tloušťka ohraničení šachovnice
+#rozlišení výšky monitoru, získané z pygame [0]>monitor [1]>pořadí z listu(v našem případě souřadnice y)
+#vzdálenost hrací plochy od lévého a horního okraje obrazovky
+#rozdělení obrazovky na 9 stejných částí
+#velikost sachovnice v počtu políček
+
+velikost = 2
+hrana = 10
+rozliseni = pygame.display.get_desktop_sizes()[0][1]
+rozliseni2 = pygame.display.get_desktop_sizes()[0][0]
+okraje = rozliseni/(velikost+1)/2
+rozdeleni = rozliseni/(velikost+1)
+
+#rozliseni aplikace
+#načtení obrázku
+#změna rozlišení obrázku
+display_surface = pygame.display.set_mode((pygame.display.get_desktop_sizes()[0]))
+img = pygame.image.load("stickman.png")
+img = pygame.transform.scale(img, (rozdeleni*3/4, rozdeleni*3.5/4))
+
+while True:
+	
+	plocha()
+	figurky()
+
+	#pokud vypnete program tak se vypne 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
 		#aktualizace displeje
 		pygame.display.update()
+

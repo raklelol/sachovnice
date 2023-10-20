@@ -1,11 +1,13 @@
 
 import pygame
+import serial
+import time
 pygame.init()
 pygame.display.set_caption('Šachy')
-sachovnice = [[1,0,1,1,1,1,1,1],
+sachovnice = [[1,1,1,1,1,1,1,1],
 			  [1,1,1,1,1,1,1,1],
 			  [0,0,0,0,0,0,0,0],
-			  [0,0,0,0,1,0,0,0],
+			  [0,0,0,0,0,0,0,0],
 			  [0,0,0,0,0,0,0,0],
 			  [0,0,0,0,0,0,0,0],
 			  [1,1,1,1,1,1,1,1],
@@ -16,6 +18,26 @@ blue = (1, 25, 54)
 black = (0, 0, 0)
 brown = (179, 127, 79)
 green = (173, 234, 153)
+odarduino = [1,1,1,1,1,1,1]
+
+#vytvoří plochu programu
+
+display_surface = pygame.display.set_mode()
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
+ser.reset_input_buffer()
+minulyline = ""
+
+#tloušťka ohraničení šachovnice
+#rozlišení výšky monitoru, získané z pygame [1]>pořadí z listu
+#vzdálenost hrací plochy od lévého a horního okraje obrazovky
+#rozdělení obrazovky na 9 stejných částí
+#velikost sachovnice v počtu políček
+velikost = 2
+hrana = 10
+rozliseniy = display_surface.get_size()[1]
+rozlisenix = display_surface.get_size()[0]
+okraje = int(rozliseniy/(velikost+1)/2)
+rozdeleni = int(rozliseniy/(velikost+1))
 
 #generace hrací plochy
 def plocha():
@@ -31,44 +53,39 @@ def plocha():
 			pygame.draw.rect(display_surface, color, pygame.Rect(rozdeleni*x+okraje, rozdeleni*y+okraje, rozdeleni, rozdeleni))
 	#ohraničení šachovnice
 	pygame.draw.rect(display_surface, black, pygame.Rect(okraje-hrana, okraje-hrana, rozdeleni*velikost+hrana*2, rozdeleni*velikost+hrana*2),  hrana)
+	
 
 #generace figurek
 def figurky():
 	for x in range(velikost):
 		for y in range(velikost):
 			if(sachovnice[y][x]==1):
-				display_surface.blit(img, (rozdeleni*x+okraje+rozdeleni*1/8, rozdeleni*y+okraje+rozdeleni*0.5/8))
+				display_surface.blit(img, (int(rozdeleni*x+okraje+rozdeleni*1/8), int(rozdeleni*y+okraje+rozdeleni*0.5/8)))
 	
-#tloušťka ohraničení šachovnice
-#rozlišení výšky monitoru, získané z pygame [0]>monitor [1]>pořadí z listu(v našem případě souřadnice y)
-#vzdálenost hrací plochy od lévého a horního okraje obrazovky
-#rozdělení obrazovky na 9 stejných částí
-#velikost sachovnice v počtu políček
 
-velikost = 2
-hrana = 10
-rozliseni = pygame.display.get_desktop_sizes()[0][1]
-rozliseni2 = pygame.display.get_desktop_sizes()[0][0]
-okraje = rozliseni/(velikost+1)/2
-rozdeleni = rozliseni/(velikost+1)
 
-#rozliseni aplikace
 #načtení obrázku
 #změna rozlišení obrázku
-display_surface = pygame.display.set_mode((pygame.display.get_desktop_sizes()[0]))
+
 img = pygame.image.load("stickman.png")
-img = pygame.transform.scale(img, (rozdeleni*3/4, rozdeleni*3.5/4))
+img = pygame.transform.scale(img, (int(rozdeleni*3/4), int(rozdeleni*3.5//4)))
 
 while True:
-	
+	line = ser.readline().decode('utf-8').rstrip()
+	if line != minulyline: 
+		odarduino = [int(char) for char in line]
+		sachovnice[odarduino[1]][odarduino[0]] = odarduino[2] 
+		minulyline = ""
+		
 	plocha()
 	figurky()
+	pygame.display.update()
 
 	#pokud vypnete program tak se vypne 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
-		#aktualizace displeje
-		pygame.display.update()
+		
+
 

@@ -32,6 +32,7 @@ minulyline = ""
 #vzdálenost hrací plochy od lévého a horního okraje obrazovky
 #rozdělení obrazovky na 9 stejných částí
 #velikost sachovnice v počtu políček
+
 velikost = 2
 hrana = 10
 rozliseniy = display_surface.get_size()[1]
@@ -62,7 +63,16 @@ def figurky():
 			if(sachovnice[y][x]==1):
 				display_surface.blit(img, (int(rozdeleni*x+okraje+rozdeleni*1/8), int(rozdeleni*y+okraje+rozdeleni*0.5/8)))
 	
-
+def ledky():
+    for x in range(velikost):
+        for y in range(velikost):
+            if(sachovnice[y][x]==1):
+                vypocet = x*velikost+y+1
+                vypocet = str(vypocet)
+                #print(vypocet)
+                ser.write(vypocet.encode('utf-8'))
+    #print("---------------")
+	
 
 #načtení obrázku
 #změna rozlišení obrázku
@@ -72,13 +82,16 @@ img = pygame.transform.scale(img, (int(rozdeleni*3/4), int(rozdeleni*3.5//4)))
 
 while True:
 	line = ser.readline().decode('utf-8').rstrip()
-	if line != minulyline: 
+	if line != minulyline:
 		odarduino = [int(char) for char in line]
 		sachovnice[odarduino[1]][odarduino[0]] = odarduino[2] 
 		minulyline = ""
+  
 		
 	plocha()
 	figurky()
+	#ser.write(b"2\n")
+	ledky()
 	pygame.display.update()
 
 	#pokud vypnete program tak se vypne 

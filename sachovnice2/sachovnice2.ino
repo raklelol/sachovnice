@@ -1,13 +1,18 @@
+#include <FastLED.h>
+#define pocetled 30
 #define pin 2
 #define minus1 3
 #define minus2 4
 #define plus1 5
 #define plus2 6
+#define leddata 12
 int plocha[2][2];
 int plus[2];
 int minus[2];
 int minulystav[2][2];
-
+CRGB led[pocetled];
+int datacislo;
+String data;
 void setup() {
   Serial.begin(9600);
   pinMode(pin, INPUT);
@@ -27,12 +32,19 @@ void setup() {
   plocha[0][1] = 1;
   plocha[1][0] = 1;
   plocha[1][1] = 1;
+  FastLED.setBrightness(90);
+  FastLED.addLeds<WS2812B, leddata, GRB>(led, pocetled);
 }
 
 void loop() {
   sachovnice();
   zmena();
-  delay(1000);
+  if (Serial.available() > 0) {
+      data = Serial.readStringUntil('\n');
+  }
+  datacislo = data.toInt()-1;
+  ledky();
+  
   /*
     digitalWrite(11, LOW);
     Serial.println(digitalRead(A0));
@@ -75,3 +87,9 @@ void zmena(){
     }
   }
 }
+void ledky(){
+  led[datacislo] = CRGB::Green;
+  FastLED.show();
+  
+}
+  

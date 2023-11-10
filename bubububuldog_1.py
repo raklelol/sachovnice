@@ -39,6 +39,7 @@ rozliseniy = display_surface.get_size()[1]
 rozlisenix = display_surface.get_size()[0]
 okraje = int(rozliseniy/(velikost+1)/2)
 rozdeleni = int(rozliseniy/(velikost+1))
+zmena = 0
 
 #generace hrací plochy
 def plocha():
@@ -64,14 +65,25 @@ def figurky():
 				display_surface.blit(img, (int(rozdeleni*x+okraje+rozdeleni*1/8), int(rozdeleni*y+okraje+rozdeleni*0.5/8)))
 	
 def ledky():
-    for x in range(velikost):
-        for y in range(velikost):
-            if(sachovnice[y][x]==1):
-                vypocet = x*velikost+y+1
-                vypocet = str(vypocet)
-                #print(vypocet)
-                ser.write(vypocet.encode('utf-8'))
-    #print("---------------")
+	global zmena
+	for x in range(velikost):
+		for y in range(velikost):
+			if(sachovnice[y][x]==1):
+				if zmena == 1:
+					vypocet = x*velikost+y+1
+					vypocet = str(vypocet)
+					#print(vypocet)
+					ser.write(vypocet.encode('utf-8'))
+					zmena = 0
+			if(sachovnice[y][x]==0):
+				if zmena == 1:
+					vypocet = x*velikost+y+1
+					vypocet = str(vypocet)
+					#print(vypocet)
+					ser.write(vypocet.encode('utf-8'))
+					zmena = 0
+				
+	#print("---------------")
 	
 
 #načtení obrázku
@@ -80,25 +92,28 @@ def ledky():
 img = pygame.image.load("stickman.png")
 img = pygame.transform.scale(img, (int(rozdeleni*3/4), int(rozdeleni*3.5//4)))
 
+
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.3)
+ser.reset_input_buffer()
 while True:
 	line = ser.readline().decode('utf-8').rstrip()
 	if line != minulyline:
+		zmena = 1
 		odarduino = [int(char) for char in line]
 		sachovnice[odarduino[1]][odarduino[0]] = odarduino[2] 
-		minulyline = ""
-  
-		
+		 
+	
 	plocha()
 	figurky()
 	#ser.write(b"2\n")
 	ledky()
 	pygame.display.update()
+	
 
 	#pokud vypnete program tak se vypne 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
-		
-
-
+			 
+			

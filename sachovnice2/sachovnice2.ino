@@ -6,6 +6,7 @@
 #define plus1 5
 #define plus2 6
 #define leddata 12
+int ledplocha[2][2];
 int plocha[2][2];
 int plus[2];
 int minus[2];
@@ -20,6 +21,10 @@ void setup() {
   pinMode(minus2, OUTPUT);
   pinMode(plus1, OUTPUT);
   pinMode(plus2, OUTPUT);
+  ledplocha[0][0]=0;
+  ledplocha[0][1]=0;
+  ledplocha[1][0]=0;
+  ledplocha[1][1]=0;
   minulystav[0][0]=1;
   minulystav[0][1]=1;
   minulystav[1][0]=1;
@@ -88,8 +93,8 @@ void zmena(){
   }
 }
 void ledky(){
-  led[datacislo] = CRGB::Green;
-  FastLED.show();
+    led[datacislo] = CRGB::Green;
+    FastLED.show();
   
 }
   

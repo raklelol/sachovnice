@@ -69,19 +69,14 @@ def ledky():
 	for x in range(velikost):
 		for y in range(velikost):
 			if(sachovnice[y][x]==1):
-				if zmena == 1:
-					vypocet = x*velikost+y+1
-					vypocet = str(vypocet)
-					#print(vypocet)
-					ser.write(vypocet.encode('utf-8'))
-					zmena = 0
-			if(sachovnice[y][x]==0):
-				if zmena == 1:
-					vypocet = x*velikost+y+1
-					vypocet = str(vypocet)
-					#print(vypocet)
-					ser.write(vypocet.encode('utf-8'))
-					zmena = 0
+				vypocet = x*velikost+y+1
+				vypocet = str(vypocet)
+				print(vypocet)
+				vypocet=vypocet+"\n"
+				ser.write(vypocet.encode('utf-8'))
+	print("---------------")
+				
+			
 				
 	#print("---------------")
 	
@@ -106,7 +101,9 @@ while True:
 	plocha()
 	figurky()
 	#ser.write(b"2\n")
-	ledky()
+	if(zmena==1):	
+		ledky()
+		zmena=0
 	pygame.display.update()
 	
 

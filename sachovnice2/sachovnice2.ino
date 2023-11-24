@@ -14,6 +14,7 @@ int minulystav[2][2];
 CRGB led[pocetled];
 int datacislo;
 String data;
+
 void setup() {
   Serial.begin(9600);
   pinMode(pin, INPUT);
@@ -21,14 +22,14 @@ void setup() {
   pinMode(minus2, OUTPUT);
   pinMode(plus1, OUTPUT);
   pinMode(plus2, OUTPUT);
-  ledplocha[0][0]=0;
-  ledplocha[0][1]=0;
-  ledplocha[1][0]=0;
-  ledplocha[1][1]=0;
-  minulystav[0][0]=1;
-  minulystav[0][1]=1;
-  minulystav[1][0]=1;
-  minulystav[1][1]=1;
+  ledplocha[0][0] = 0;
+  ledplocha[0][1] = 0;
+  ledplocha[1][0] = 0;
+  ledplocha[1][1] = 0;
+  minulystav[0][0] = 1;
+  minulystav[0][1] = 1;
+  minulystav[1][0] = 1;
+  minulystav[1][1] = 1;
   minus[0] = 3;
   minus[1] = 4;
   plus[0] = 5;
@@ -37,7 +38,7 @@ void setup() {
   plocha[0][1] = 1;
   plocha[1][0] = 1;
   plocha[1][1] = 1;
-  FastLED.setBrightness(90);
+  FastLED.setBrightness(255);
   FastLED.addLeds<WS2812B, leddata, GRB>(led, pocetled);
 }
 
@@ -45,11 +46,18 @@ void loop() {
   sachovnice();
   zmena();
   if (Serial.available() > 0) {
-      data = Serial.readStringUntil('\n');
+    fill_solid(led, pocetled, CRGB(0, 0, 0));
+    data = Serial.readStringUntil('\n');
+
+
+    for (int i = 0; i < data.length(); i++) {
+      datacislo = (int) data.charAt(i) - 48; // Získání aktuálního znaku
+      ledky();
+    }
+
   }
-  datacislo = data.toInt()-1;
-  ledky();
-  
+
+
   /*
     digitalWrite(11, LOW);
     Serial.println(digitalRead(A0));
@@ -79,22 +87,23 @@ void vypis() {
   Serial.println(" ");
 }
 
-void zmena(){
+void zmena() {
   for (int radek = 0; radek < 2; radek++) {
-    for (int sloupec = 0; sloupec < 2; sloupec++){
-       if (plocha[sloupec][radek]!= minulystav[sloupec][radek]){
-         Serial.print(sloupec);
-         Serial.print(radek);
-         Serial.println(plocha[sloupec][radek]);
-         minulystav[sloupec][radek] = plocha[sloupec][radek];
-          
-       }
+    for (int sloupec = 0; sloupec < 2; sloupec++) {
+      if (plocha[sloupec][radek] != minulystav[sloupec][radek]) {
+        Serial.print(sloupec);
+        Serial.print(radek);
+        Serial.println(plocha[sloupec][radek]);
+        minulystav[sloupec][radek] = plocha[sloupec][radek];
+
+      }
     }
   }
 }
-void ledky(){
-    led[datacislo] = CRGB::Green;
-    FastLED.show();
-  
+void ledky() {
+
+  led[datacislo - 1] = CRGB::White;
+  FastLED.show();
+
+
 }
-  

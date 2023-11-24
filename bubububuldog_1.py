@@ -13,6 +13,7 @@ sachovnice = [[1,1,1,1,1,1,1,1],
 			  [1,1,1,1,1,1,1,1],
 			  [1,1,1,1,1,1,1,1]]
 
+
 white = (255, 255, 255)
 blue = (1, 25, 54)
 black = (0, 0, 0)
@@ -32,7 +33,7 @@ minulyline = ""
 #vzdálenost hrací plochy od lévého a horního okraje obrazovky
 #rozdělení obrazovky na 9 stejných částí
 #velikost sachovnice v počtu políček
-
+komunikace="f"
 velikost = 2
 hrana = 10
 rozliseniy = display_surface.get_size()[1]
@@ -61,21 +62,29 @@ def plocha():
 def figurky():
 	for x in range(velikost):
 		for y in range(velikost):
-			if(sachovnice[y][x]==1):
+			if(sachovnice[y][x]==0):
 				display_surface.blit(img, (int(rozdeleni*x+okraje+rozdeleni*1/8), int(rozdeleni*y+okraje+rozdeleni*0.5/8)))
 	
 def ledky():
 	global zmena
+	global komunikace
 	for x in range(velikost):
 		for y in range(velikost):
-			if(sachovnice[y][x]==1):
+			if(sachovnice[y][x]==0):
 				vypocet = x*velikost+y+1
 				vypocet = str(vypocet)
-				print(vypocet)
-				vypocet=vypocet+"\n"
-				ser.write(vypocet.encode('utf-8'))
-	print("---------------")
+				komunikace = komunikace + vypocet
 				
+	print(f">{komunikace}<")
+	komunikace = komunikace+"\n"
+	print("---------------")
+	ser.write(komunikace.encode('utf-8'))
+	komunikace = "f"
+	
+	
+	
+ledky()
+					
 			
 				
 	#print("---------------")
@@ -95,7 +104,7 @@ while True:
 	if line != minulyline:
 		zmena = 1
 		odarduino = [int(char) for char in line]
-		sachovnice[odarduino[1]][odarduino[0]] = odarduino[2] 
+		sachovnice[odarduino[1]][odarduino[0]] = odarduino[2]
 		 
 	
 	plocha()

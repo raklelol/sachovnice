@@ -1,3 +1,0 @@
-# sachovnice
-sachy
-dobrej

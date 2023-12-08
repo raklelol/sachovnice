@@ -14,7 +14,7 @@ int minulystav[2][2];
 CRGB led[pocetled];
 int datacislo;
 String data;
-
+String cislo = "";
 void setup() {
   Serial.begin(9600);
   pinMode(pin, INPUT);
@@ -48,13 +48,21 @@ void loop() {
   if (Serial.available() > 0) {
     fill_solid(led, pocetled, CRGB(0, 0, 0));
     data = Serial.readStringUntil('\n');
-
-
-    for (int i = 0; i < data.length(); i++) {
-      datacislo = (int) data.charAt(i) - 48; // Získání aktuálního znaku
-      ledky();
+    
+    for(int i = 0; i < data.length(); i++){
+      if(data.charAt(i) != ',' || data.charAt(i) != 'f'){
+        
+        cislo = cislo + data.charAt(i);
+        
+      }
+      if(data.charAt(i) == ','){
+        datacislo = cislo.toInt();
+        if (datacilo
+        Serial.println(datacislo);
+        ledky();
+        cislo = "";
+      }
     }
-
   }
 
 

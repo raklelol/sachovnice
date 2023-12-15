@@ -71,17 +71,15 @@ def ledky():
 	for x in range(velikost):
 		for y in range(velikost):
 			if(sachovnice[y][x]==0):
-				vypocet = x*velikost+y+1
+				vypocet = y*velikost+x+1
 				vypocet = str(vypocet)
-				komunikace = komunikace + vypocet
+				komunikace = komunikace + vypocet + ","
 				
-	print(f">{komunikace}<")
+	print(komunikace)
 	komunikace = komunikace+"\n"
 	print("---------------")
 	ser.write(komunikace.encode('utf-8'))
 	komunikace = "f"
-	
-	
 	
 ledky()
 					
@@ -122,4 +120,4 @@ while True:
 			pygame.quit()
 			quit()
 			 
-			
+					

@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#define pocetled 30
+#define pocetled 60
 #define pin 2
 #define minus1 3
 #define minus2 4
@@ -38,7 +38,7 @@ void setup() {
   plocha[0][1] = 1;
   plocha[1][0] = 1;
   plocha[1][1] = 1;
-  FastLED.setBrightness(255);
+  FastLED.setBrightness(100);
   FastLED.addLeds<WS2812B, leddata, GRB>(led, pocetled);
 }
 
@@ -47,30 +47,30 @@ void loop() {
   zmena();
   if (Serial.available() > 0) {
     fill_solid(led, pocetled, CRGB(0, 0, 0));
+    FastLED.show();
     data = Serial.readStringUntil('\n');
-    
-    for(int i = 0; i < data.length(); i++){
-      if(data.charAt(i) != ',' || data.charAt(i) != 'f'){
-        
-        cislo = cislo + data.charAt(i);
-        
-      }
-      if(data.charAt(i) == ','){
-        datacislo = cislo.toInt();
-        if (datacilo
-        Serial.println(datacislo);
-        ledky();
-        cislo = "";
-      }
+  }
+  for (int i = 0; i < data.length(); i++) {
+    if (data.charAt(i) != ',' and data.charAt(i) != 'f') {
+
+      cislo = cislo + data.charAt(i);
+
+    }
+    if (data.charAt(i) == ',') {
+      datacislo = cislo.toInt();
+      //Serial.println(datacislo);
+      ledky();
+      cislo = "";
     }
   }
-
-
-  /*
-    digitalWrite(11, LOW);
-    Serial.println(digitalRead(A0));
-  */
 }
+
+
+/*
+  digitalWrite(11, LOW);
+  Serial.println(digitalRead(A0));
+*/
+
 
 void sachovnice() {
   for (int radek = 0; radek < 2; radek++) {
